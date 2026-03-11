@@ -1,7 +1,0 @@
-interface:
-  display_name: "CodeAtlas"
-  short_description: "Lightweight module relationship HTML generator"
-  default_prompt: "Use $codeatlas on this repository and generate a single-file HTML map of module-to-module relationships."
-
-policy:
-  allow_implicit_invocation: true
