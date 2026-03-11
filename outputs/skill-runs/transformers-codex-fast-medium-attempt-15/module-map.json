@@ -1,0 +1,240 @@
+{
+  "project": "huggingface/transformers",
+  "source": {
+    "type": "local",
+    "path": "/Users/lijunjie/Downloads/code_atlas/.tmp/repos/transformers",
+    "git": {
+      "branch": "main",
+      "commit": "42ff4f324f02448dcf03ea7d619f682b4e62c010"
+    }
+  },
+  "modules": [
+    {
+      "name": "transformers.__init__",
+      "role": "Package facade that exposes the public API through lazy import structure and backend capability checks."
+    },
+    {
+      "name": "transformers.cli",
+      "role": "Command-line entry layer (`transformers` console script) wiring chat, serve, download, and environment commands."
+    },
+    {
+      "name": "transformers.pipelines",
+      "role": "Task-oriented inference orchestration that maps user tasks to Auto classes and concrete pipeline implementations."
+    },
+    {
+      "name": "transformers.trainer",
+      "role": "Main training orchestration engine coordinating datasets, models, optimizers, callbacks, and distributed/integration hooks."
+    },
+    {
+      "name": "transformers.modeling_utils",
+      "role": "Core model runtime foundation with `PreTrainedModel`, checkpoint loading, device placement, and weight conversion logic."
+    },
+    {
+      "name": "transformers.models.auto",
+      "role": "Auto-model factory and mapping registry that resolves model/config classes from model identifiers and config types."
+    },
+    {
+      "name": "transformers.generation",
+      "role": "Text generation subsystem exposing generation config, decoding utilities, logits processors, stopping criteria, and streamers."
+    },
+    {
+      "name": "transformers.integrations",
+      "role": "Adapters to external runtimes/tools (DeepSpeed, FSDP, Accelerate, logging backends, TP kernels, PEFT)."
+    },
+    {
+      "name": "transformers.quantizers",
+      "role": "Quantization abstraction and auto-quantizer registry used to load, route, and configure low-bit model execution."
+    },
+    {
+      "name": "transformers.data",
+      "role": "Dataset-side utilities: collators, processors, and classic benchmark helper functions used by training/evaluation flows."
+    },
+    {
+      "name": "transformers.distributed",
+      "role": "Distributed configuration surface used by model loading/runtime decisions across multi-device execution."
+    },
+    {
+      "name": "transformers.processing_and_tokenization",
+      "role": "Cross-modal preprocessing contracts (config/tokenizer/processor mixins) shared by pipelines, trainer, and model loading paths."
+    },
+    {
+      "name": "transformers.utils",
+      "role": "Common foundation utilities: optional dependency detection, hub/cache helpers, logging, lazy module and compatibility helpers."
+    }
+  ],
+  "relations": [
+    {
+      "source": "transformers.cli",
+      "target": "transformers.__init__",
+      "type": "runtime_flow",
+      "reason": "setup.py entry_points maps `transformers=transformers.cli.transformers:main`, making CLI the runtime package entry path."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.pipelines",
+      "type": "runtime_flow",
+      "reason": "src/transformers/__init__.py declares `pipelines` in `_import_structure` for top-level lazy API exposure."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.trainer",
+      "type": "runtime_flow",
+      "reason": "src/transformers/__init__.py exports trainer symbols via lazy import map (`training_args`, callback and trainer utilities)."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.generation",
+      "type": "runtime_flow",
+      "reason": "`generation` is listed in package `_import_structure`, so top-level API resolves into generation subsystem lazily."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.integrations",
+      "type": "runtime_flow",
+      "reason": "Package initializer exports integration availability helpers from `integrations` for runtime feature gating."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.quantizers",
+      "type": "runtime_flow",
+      "reason": "`quantizers` is part of the package-level import structure, allowing runtime resolution from the facade."
+    },
+    {
+      "source": "transformers.__init__",
+      "target": "transformers.utils",
+      "type": "imports",
+      "reason": "src/transformers/__init__.py imports `OptionalDependencyNotAvailable`, `_LazyModule`, and backend checks from `.utils`."
+    },
+    {
+      "source": "transformers.pipelines",
+      "target": "transformers.models.auto",
+      "type": "imports",
+      "reason": "src/transformers/pipelines/__init__.py imports `AutoConfig`, `AutoModel*`, `AutoTokenizer`, and auto mapping modules."
+    },
+    {
+      "source": "transformers.pipelines",
+      "target": "transformers.processing_and_tokenization",
+      "type": "imports",
+      "reason": "pipelines imports `ProcessorMixin`, `PreTrainedTokenizer`, and feature/image processor mixins for multimodal input normalization."
+    },
+    {
+      "source": "transformers.pipelines",
+      "target": "transformers.utils",
+      "type": "imports",
+      "reason": "pipelines imports utility helpers such as `cached_file`, dependency checks, logging, and commit hash extraction."
+    },
+    {
+      "source": "transformers.pipelines",
+      "target": "transformers.modeling_utils",
+      "type": "depends_on",
+      "reason": "`TYPE_CHECKING` section imports `PreTrainedModel`, signaling pipeline contracts are built around modeling core abstractions."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.data",
+      "type": "imports",
+      "reason": "trainer.py imports `DataCollator`, `DataCollatorWithPadding`, and `default_data_collator` from `.data.data_collator` (line ~56)."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.modeling_utils",
+      "type": "imports",
+      "reason": "trainer.py imports `PreTrainedModel` and `unwrap_model` from `.modeling_utils` (line ~75)."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.models.auto",
+      "type": "imports",
+      "reason": "trainer.py imports `MODEL_MAPPING_NAMES` and `MODEL_FOR_CAUSAL_LM_MAPPING_NAMES` from `.models.auto.modeling_auto` (line ~76)."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.processing_and_tokenization",
+      "type": "imports",
+      "reason": "trainer.py imports `ProcessorMixin` and `PreTrainedTokenizerBase` from processing/tokenization modules (lines ~81-82)."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.integrations",
+      "type": "imports",
+      "reason": "trainer.py pulls in reporting callbacks plus DeepSpeed/FSDP/TPU/Liger/PEFT helpers from `.integrations*` (lines ~39, ~62-73)."
+    },
+    {
+      "source": "transformers.trainer",
+      "target": "transformers.utils",
+      "type": "depends_on",
+      "reason": "trainer.py depends on extensive utility surface (`is_*_available`, logging, safe loading, quantization config enums)."
+    },
+    {
+      "source": "transformers.modeling_utils",
+      "target": "transformers.generation",
+      "type": "imports",
+      "reason": "modeling_utils.py imports `CompileConfig` and `GenerationConfig` from `.generation` (line ~57)."
+    },
+    {
+      "source": "transformers.modeling_utils",
+      "target": "transformers.integrations",
+      "type": "imports",
+      "reason": "modeling_utils imports `PeftAdapterMixin`, DeepSpeed/FSDP/tensor-parallel and attention integration helpers (lines ~58-77)."
+    },
+    {
+      "source": "transformers.modeling_utils",
+      "target": "transformers.quantizers",
+      "type": "imports",
+      "reason": "modeling_utils imports `HfQuantizer`, `get_hf_quantizer`, and quantizer utilities (lines ~91-93)."
+    },
+    {
+      "source": "transformers.modeling_utils",
+      "target": "transformers.distributed",
+      "type": "imports",
+      "reason": "modeling_utils imports `DistributedConfig` from `.distributed` (line ~55) for multi-device model runtime behavior."
+    },
+    {
+      "source": "transformers.modeling_utils",
+      "target": "transformers.utils",
+      "type": "depends_on",
+      "reason": "modeling_utils uses broad utility/hub/import helpers for cache, compatibility checks, model-card operations, and logging."
+    },
+    {
+      "source": "transformers.models.auto",
+      "target": "transformers.generation",
+      "type": "depends_on",
+      "reason": "models/auto/modeling_auto.py type-checking imports `GenerationMixin`, linking auto model classes with generation capabilities."
+    },
+    {
+      "source": "transformers.models.auto",
+      "target": "transformers.modeling_utils",
+      "type": "depends_on",
+      "reason": "models/auto/modeling_auto.py type-checking imports `PreTrainedModel`, anchoring auto classes to model base contracts."
+    },
+    {
+      "source": "transformers.integrations",
+      "target": "transformers.utils",
+      "type": "imports",
+      "reason": "integrations/__init__.py imports `_LazyModule`, optional dependency guards, and torch-version checks from `.utils`."
+    },
+    {
+      "source": "transformers.generation",
+      "target": "transformers.utils",
+      "type": "imports",
+      "reason": "generation/__init__.py imports `_LazyModule`, dependency guards, and torch-availability checks from `.utils`."
+    },
+    {
+      "source": "transformers.distributed",
+      "target": "transformers.utils",
+      "type": "imports",
+      "reason": "distributed/__init__.py imports `_LazyModule` from `.utils` to defer heavy distributed imports."
+    },
+    {
+      "source": "transformers.quantizers",
+      "target": "transformers.utils",
+      "type": "depends_on",
+      "reason": "quantizer runtime paths rely on optional dependency decisions and config helpers exposed from the shared utility layer."
+    }
+  ],
+  "entrypoints": [
+    "setup.py::console_scripts transformers=transformers.cli.transformers:main",
+    "src/transformers/cli/transformers.py::main()",
+    "import transformers (src/transformers/__init__.py lazy API facade)"
+  ]
+}

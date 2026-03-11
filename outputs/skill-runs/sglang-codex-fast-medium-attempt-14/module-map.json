@@ -1,0 +1,279 @@
+{
+  "project": "sglang",
+  "source": {
+    "type": "local",
+    "path": "/Users/lijunjie/Downloads/code_atlas/.tmp/repos/sglang"
+  },
+  "modules": [
+    {
+      "name": "python/sglang/cli",
+      "role": "Primary user entry commands (`sglang serve|generate|version`); dispatches into LLM runtime or diffusion runtime paths."
+    },
+    {
+      "name": "python/sglang/launch_server.py",
+      "role": "LLM-serving launcher that selects HTTP, gRPC, Ray, or encoder-only disaggregation startup modes."
+    },
+    {
+      "name": "python/sglang/lang",
+      "role": "Frontend DSL/runtime client API layer (`Runtime`, `Engine`, generation primitives) exposed from package root."
+    },
+    {
+      "name": "python/sglang/srt/entrypoints",
+      "role": "SRT server surface (FastAPI HTTP, gRPC server, OpenAI/Anthropic/Ollama adapters, engine bootstrap, warmup)."
+    },
+    {
+      "name": "python/sglang/srt/managers",
+      "role": "Runtime orchestration managers for tokenization, scheduling, templates, request structs, and process coordination."
+    },
+    {
+      "name": "python/sglang/srt/model_executor",
+      "role": "Model execution backend used by scheduler/runtime to run inference steps on loaded model weights."
+    },
+    {
+      "name": "python/sglang/srt/layers",
+      "role": "Core inference layers (attention, MoE, quantization, activations, normalization, samplers)."
+    },
+    {
+      "name": "python/sglang/srt/mem_cache",
+      "role": "KV cache memory pools and host/device cache management for throughput and long-context reuse."
+    },
+    {
+      "name": "python/sglang/srt/disaggregation",
+      "role": "Prefill/decode disaggregation modes and utilities (including encoder-side serving flows)."
+    },
+    {
+      "name": "python/sglang/srt/grpc",
+      "role": "gRPC request management, scheduler launcher bridge, and health/rpc utilities for SRT serving."
+    },
+    {
+      "name": "python/sglang/multimodal_gen",
+      "role": "Diffusion and multimodal generation runtime with separate serve path selected by CLI model-type logic."
+    },
+    {
+      "name": "sgl-kernel/python/sgl_kernel",
+      "role": "Python package exposing precompiled/custom ops (attention, quantization, MoE, cache, sampling kernels)."
+    },
+    {
+      "name": "sgl-kernel/csrc",
+      "role": "C++/CUDA/HIP kernel implementation source compiled into `sgl_kernel` extension modules."
+    },
+    {
+      "name": "sgl-model-gateway/src/main.rs",
+      "role": "Gateway CLI binary entry (`sgl-model-gateway`/`smg`/`amg`) parsing launch config for routing mode/policies/discovery."
+    },
+    {
+      "name": "sgl-model-gateway/src/server",
+      "role": "Axum server endpoints and request handlers exposing OpenAI-compatible APIs, worker admin, parse/tokenize, health."
+    },
+    {
+      "name": "sgl-model-gateway/src/routers",
+      "role": "Router implementations and `RouterManager` for HTTP/gRPC/PD/OpenAI routing with model-aware selection."
+    },
+    {
+      "name": "sgl-model-gateway/src/core",
+      "role": "Gateway core worker abstractions, registry/hash ring, queue, retry/circuit-breaker and workflow primitives."
+    },
+    {
+      "name": "sgl-model-gateway/src/policies",
+      "role": "Load-balancing policy implementations (cache-aware, power-of-two, prefix hash, manual, round robin, random)."
+    },
+    {
+      "name": "sgl-model-gateway/src/config",
+      "role": "Typed configuration builder/validation and routing mode definitions consumed by startup/server components."
+    },
+    {
+      "name": "sgl-model-gateway/src/service_discovery",
+      "role": "Kubernetes pod watcher/discovery that updates worker/router topology for regular and PD deployments."
+    },
+    {
+      "name": "sgl-model-gateway/src/observability",
+      "role": "Metrics/logging/OpenTelemetry instrumentation attached to gateway server and worker/routing lifecycle."
+    },
+    {
+      "name": "sgl-model-gateway/src/wasm",
+      "role": "WASM extension route support for request-time custom logic modules registered through gateway APIs."
+    }
+  ],
+  "relations": [
+    {
+      "source": "python/sglang/cli",
+      "target": "python/sglang/launch_server.py",
+      "type": "calls",
+      "reason": "`cli/serve.py` imports `run_server` from `sglang.launch_server` for standard LLM serving path."
+    },
+    {
+      "source": "python/sglang/cli",
+      "target": "python/sglang/multimodal_gen",
+      "type": "calls",
+      "reason": "`cli/serve.py` dispatches to `multimodal_gen.runtime.entrypoints.cli.serve` when model is diffusion."
+    },
+    {
+      "source": "python/sglang/launch_server.py",
+      "target": "python/sglang/srt/entrypoints",
+      "type": "calls",
+      "reason": "Launch path selects `srt.entrypoints.http_server.launch_server` or `srt.entrypoints.grpc_server.serve_grpc`."
+    },
+    {
+      "source": "python/sglang/launch_server.py",
+      "target": "python/sglang/srt/disaggregation",
+      "type": "calls",
+      "reason": "Encoder-only mode imports `srt.disaggregation.encode_server` / `encode_grpc_server`."
+    },
+    {
+      "source": "python/sglang/lang",
+      "target": "python/sglang/srt/entrypoints",
+      "type": "depends_on",
+      "reason": "`lang/api.py` lazily exposes runtime `Engine` by importing `sglang.srt.entrypoints.engine`."
+    },
+    {
+      "source": "python/sglang/srt/entrypoints",
+      "target": "python/sglang/srt/managers",
+      "type": "imports",
+      "reason": "`entrypoints/http_server.py` imports tokenizer/template/io_struct and multi-tokenizer manager modules."
+    },
+    {
+      "source": "python/sglang/srt/entrypoints",
+      "target": "python/sglang/srt/grpc",
+      "type": "imports",
+      "reason": "`entrypoints/grpc_server.py` imports grpc request manager, health servicer, and scheduler launcher."
+    },
+    {
+      "source": "python/sglang/srt/entrypoints",
+      "target": "python/sglang/srt/disaggregation",
+      "type": "imports",
+      "reason": "HTTP/gRPC entrypoints use disaggregation utilities and KV-event helpers for PD mode."
+    },
+    {
+      "source": "python/sglang/srt/entrypoints",
+      "target": "python/sglang/srt/model_executor",
+      "type": "runtime_flow",
+      "reason": "Engine bootstrap starts scheduler/executor pipeline that delegates batch inference to model executor stack."
+    },
+    {
+      "source": "python/sglang/srt/model_executor",
+      "target": "python/sglang/srt/layers",
+      "type": "depends_on",
+      "reason": "Model execution relies on layer primitives for attention, quantization, MoE routing, and sampling operations."
+    },
+    {
+      "source": "python/sglang/srt/layers",
+      "target": "sgl-kernel/python/sgl_kernel",
+      "type": "imports",
+      "reason": "Multiple layer modules import `sgl_kernel` ops (e.g., flash attention, quant kernels, MoE helpers)."
+    },
+    {
+      "source": "python/sglang/srt/mem_cache",
+      "target": "sgl-kernel/python/sgl_kernel",
+      "type": "imports",
+      "reason": "`mem_cache/memory_pool_host.py` imports `sgl_kernel.kvcacheio` transfer kernels."
+    },
+    {
+      "source": "sgl-kernel/python/sgl_kernel",
+      "target": "sgl-kernel/csrc",
+      "type": "depends_on",
+      "reason": "`sgl_kernel/__init__.py` loads architecture-specific compiled ops produced from `sgl-kernel/csrc`."
+    },
+    {
+      "source": "python/sglang/srt/disaggregation",
+      "target": "python/sglang/srt/managers",
+      "type": "depends_on",
+      "reason": "Disaggregation services interact with manager-layer request structures and runtime services for PD workflows."
+    },
+    {
+      "source": "python/sglang/srt/entrypoints",
+      "target": "python/sglang/srt/mem_cache",
+      "type": "runtime_flow",
+      "reason": "Serving runtime uses cache/prefix memory layers to warmup, reuse KV state, and manage throughput."
+    },
+    {
+      "source": "sgl-model-gateway/src/main.rs",
+      "target": "sgl-model-gateway/src/config",
+      "type": "imports",
+      "reason": "`main.rs` imports config types/builders (`RouterConfig`, retry, breaker, metrics, discovery settings)."
+    },
+    {
+      "source": "sgl-model-gateway/src/main.rs",
+      "target": "sgl-model-gateway/src/server",
+      "type": "calls",
+      "reason": "CLI launch eventually constructs `ServerConfig` and starts gateway server runtime."
+    },
+    {
+      "source": "sgl-model-gateway/src/server",
+      "target": "sgl-model-gateway/src/routers",
+      "type": "calls",
+      "reason": "Server handlers delegate route requests (`chat/completions/embeddings/responses/...`) to router trait/manager."
+    },
+    {
+      "source": "sgl-model-gateway/src/server",
+      "target": "sgl-model-gateway/src/core",
+      "type": "depends_on",
+      "reason": "Server owns worker manager, job queue, worker registry, and workflow engines from core module."
+    },
+    {
+      "source": "sgl-model-gateway/src/server",
+      "target": "sgl-model-gateway/src/service_discovery",
+      "type": "calls",
+      "reason": "Server starts Kubernetes discovery loop (`start_service_discovery`) to maintain worker topology."
+    },
+    {
+      "source": "sgl-model-gateway/src/server",
+      "target": "sgl-model-gateway/src/observability",
+      "type": "depends_on",
+      "reason": "Server wires logging, Prometheus metrics, and OTEL tracing middleware/components."
+    },
+    {
+      "source": "sgl-model-gateway/src/server",
+      "target": "sgl-model-gateway/src/wasm",
+      "type": "calls",
+      "reason": "Server registers wasm endpoints (`add/remove/list_wasm_module`) for runtime extension hooks."
+    },
+    {
+      "source": "sgl-model-gateway/src/routers",
+      "target": "sgl-model-gateway/src/core",
+      "type": "depends_on",
+      "reason": "Routers and `RouterManager` use worker registry/runtime type/connection mode from core abstractions."
+    },
+    {
+      "source": "sgl-model-gateway/src/routers",
+      "target": "sgl-model-gateway/src/policies",
+      "type": "depends_on",
+      "reason": "Router factory and route selection rely on policy implementations for balancing and model routing decisions."
+    },
+    {
+      "source": "sgl-model-gateway/src/routers",
+      "target": "sgl-model-gateway/src/config",
+      "type": "depends_on",
+      "reason": "Router identity selection and mode branching use `RoutingMode` and connection config types."
+    },
+    {
+      "source": "sgl-model-gateway/src/service_discovery",
+      "target": "sgl-model-gateway/src/core",
+      "type": "runtime_flow",
+      "reason": "Discovery watcher creates worker registration jobs and updates registry state as pod status changes."
+    },
+    {
+      "source": "sgl-model-gateway/src/policies",
+      "target": "sgl-model-gateway/src/core",
+      "type": "depends_on",
+      "reason": "Policy scoring/selection uses worker metadata/load/registry primitives from core module."
+    },
+    {
+      "source": "sgl-model-gateway/src/config",
+      "target": "sgl-model-gateway/src/core",
+      "type": "depends_on",
+      "reason": "Config includes routing and connection settings that map into core worker/runtime types."
+    },
+    {
+      "source": "sgl-model-gateway/src/observability",
+      "target": "sgl-model-gateway/src/core",
+      "type": "runtime_flow",
+      "reason": "Observability layer records worker/router/core events and exports runtime metrics for those components."
+    }
+  ],
+  "entrypoints": [
+    "python/pyproject.toml -> [project.scripts] sglang = sglang.cli.main:main",
+    "python/sglang/launch_server.py",
+    "sgl-model-gateway/src/main.rs (bins: sgl-model-gateway, smg, amg)",
+    "sgl-kernel/python/sgl_kernel/__init__.py"
+  ]
+}

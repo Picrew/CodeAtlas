@@ -15,7 +15,15 @@ venv/
 
 # Build and temp outputs
 out/
-outputs/
+outputs/*
+!outputs/skill-runs/
+outputs/skill-runs/*
+!outputs/skill-runs/vllm-codex-fast-medium-attempt-13/
+!outputs/skill-runs/vllm-codex-fast-medium-attempt-13/**
+!outputs/skill-runs/sglang-codex-fast-medium-attempt-14/
+!outputs/skill-runs/sglang-codex-fast-medium-attempt-14/**
+!outputs/skill-runs/transformers-codex-fast-medium-attempt-15/
+!outputs/skill-runs/transformers-codex-fast-medium-attempt-15/**
 .tmp/
 tmp/
 *.log

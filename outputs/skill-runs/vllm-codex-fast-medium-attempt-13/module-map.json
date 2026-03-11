@@ -1,0 +1,335 @@
+{
+  "project": "vllm",
+  "source": {
+    "type": "local",
+    "path": "/Users/lijunjie/Downloads/code_atlas/.tmp/repos/vllm",
+    "git": {
+      "remote": "https://github.com/vllm-project/vllm",
+      "branch": "main",
+      "commit": "098d844"
+    }
+  },
+  "modules": [
+    {
+      "name": "entrypoints",
+      "role": "User-facing interfaces: CLI, OpenAI-compatible HTTP server, and Python LLM APIs that accept requests and route them into the runtime.",
+      "path": "vllm/entrypoints"
+    },
+    {
+      "name": "engine",
+      "role": "Compatibility engine facade that points to V1 engine implementation and shared engine argument/protocol helpers.",
+      "path": "vllm/engine"
+    },
+    {
+      "name": "v1/engine",
+      "role": "Main serving orchestrator: request lifecycle, input/output processors, engine-core client wiring, and process-level coordination.",
+      "path": "vllm/v1/engine"
+    },
+    {
+      "name": "v1/core",
+      "role": "Inner scheduling core: KV cache planning, scheduling loop, structured outputs manager, and request stepping decisions.",
+      "path": "vllm/v1/core"
+    },
+    {
+      "name": "v1/executor",
+      "role": "Execution backend manager that launches and monitors worker processes (single/multiprocess/ray/external modes).",
+      "path": "vllm/v1/executor"
+    },
+    {
+      "name": "v1/worker",
+      "role": "Per-device worker runtime that initializes distributed state, loads model runners, and executes inference steps.",
+      "path": "vllm/v1/worker"
+    },
+    {
+      "name": "model_executor",
+      "role": "Model execution stack: model registry, loaders, layers, kernels bridges, and runner logic for many model families.",
+      "path": "vllm/model_executor"
+    },
+    {
+      "name": "distributed",
+      "role": "Distributed communication/runtime primitives for TP/PP/DP groups, KV transfer, and weight/collective utilities.",
+      "path": "vllm/distributed"
+    },
+    {
+      "name": "config",
+      "role": "Strongly-typed configuration system (VllmConfig and sub-configs) that controls runtime, parallelism, kernels, and policies.",
+      "path": "vllm/config"
+    },
+    {
+      "name": "inputs",
+      "role": "Prompt/input contracts and normalized request payload types used before scheduling and model execution.",
+      "path": "vllm/inputs"
+    },
+    {
+      "name": "tokenizers",
+      "role": "Tokenizer abstraction and model-specific tokenization helpers for text and multimodal request preparation.",
+      "path": "vllm/tokenizers"
+    },
+    {
+      "name": "renderers",
+      "role": "Prompt rendering/conversion layer (chat/template/prompt conversion) between API payloads and engine-ready forms.",
+      "path": "vllm/renderers"
+    },
+    {
+      "name": "multimodal",
+      "role": "Registry and processing pipeline for image/video/audio style inputs and media preprocessing hooks.",
+      "path": "vllm/multimodal"
+    },
+    {
+      "name": "plugins",
+      "role": "Extensibility surface for general plugins, IO processors, and LoRA resolver plugins loaded into runtime.",
+      "path": "vllm/plugins"
+    },
+    {
+      "name": "lora",
+      "role": "LoRA adapter requests, layers, and integration logic that injects adapter behavior into model execution.",
+      "path": "vllm/lora"
+    },
+    {
+      "name": "kernels",
+      "role": "Python-level optimized kernel wrappers/utilities used by model execution for fast attention and math ops.",
+      "path": "vllm/kernels"
+    },
+    {
+      "name": "compilation",
+      "role": "Compilation/passes and graph optimization path to improve runtime throughput across supported hardware.",
+      "path": "vllm/compilation"
+    },
+    {
+      "name": "csrc",
+      "role": "Native C++/CUDA custom ops and low-level runtime pieces backing high-performance kernels.",
+      "path": "csrc"
+    }
+  ],
+  "relations": [
+    {
+      "source": "entrypoints",
+      "target": "engine",
+      "type": "depends_on",
+      "reason": "entrypoints/openai/api_server.py imports vllm.engine.arg_utils and protocol types to create runtime clients"
+    },
+    {
+      "source": "entrypoints",
+      "target": "v1/engine",
+      "type": "imports",
+      "reason": "entrypoints/openai/api_server.py builds AsyncLLM from vllm.v1.engine.async_llm"
+    },
+    {
+      "source": "entrypoints",
+      "target": "inputs",
+      "type": "depends_on",
+      "reason": "public APIs normalize request payloads into internal prompt/input contracts"
+    },
+    {
+      "source": "entrypoints",
+      "target": "renderers",
+      "type": "depends_on",
+      "reason": "chat/completions style payloads are rendered into model-ready prompt structures"
+    },
+    {
+      "source": "entrypoints",
+      "target": "tokenizers",
+      "type": "depends_on",
+      "reason": "API layer depends on tokenizer and token accounting utilities"
+    },
+    {
+      "source": "entrypoints",
+      "target": "plugins",
+      "type": "imports",
+      "reason": "serving path registers optional routers/processors that rely on plugin wiring"
+    },
+    {
+      "source": "engine",
+      "target": "v1/engine",
+      "type": "imports",
+      "reason": "engine/llm_engine.py aliases LLMEngine to vllm.v1.engine.llm_engine.LLMEngine"
+    },
+    {
+      "source": "v1/engine",
+      "target": "v1/core",
+      "type": "runtime_flow",
+      "reason": "EngineCoreRequest objects flow into core scheduling loop and return EngineCoreOutputs"
+    },
+    {
+      "source": "v1/engine",
+      "target": "v1/executor",
+      "type": "depends_on",
+      "reason": "LLMEngine picks Executor.get_class(vllm_config) to run model execution backend"
+    },
+    {
+      "source": "v1/engine",
+      "target": "renderers",
+      "type": "depends_on",
+      "reason": "v1 engine uses renderer_from_config and prompt preprocessing utilities"
+    },
+    {
+      "source": "v1/engine",
+      "target": "inputs",
+      "type": "depends_on",
+      "reason": "input processor converts user prompts into engine request structures"
+    },
+    {
+      "source": "v1/engine",
+      "target": "plugins",
+      "type": "depends_on",
+      "reason": "engine path resolves IO processor plugin via plugins.io_processors"
+    },
+    {
+      "source": "v1/engine",
+      "target": "multimodal",
+      "type": "depends_on",
+      "reason": "engine initialization uses MULTIMODAL_REGISTRY and media receiver caches"
+    },
+    {
+      "source": "v1/engine",
+      "target": "distributed",
+      "type": "depends_on",
+      "reason": "engine handles DP groups and distributed process group lifecycle"
+    },
+    {
+      "source": "v1/engine",
+      "target": "config",
+      "type": "imports",
+      "reason": "v1 engine classes are parameterized by VllmConfig, ParallelConfig, and scheduler/cache config"
+    },
+    {
+      "source": "v1/core",
+      "target": "v1/executor",
+      "type": "calls",
+      "reason": "core constructs model_executor = executor_class(vllm_config) and invokes execution RPCs"
+    },
+    {
+      "source": "v1/core",
+      "target": "distributed",
+      "type": "depends_on",
+      "reason": "core uses distributed lifecycle and network transport helpers for worker communication"
+    },
+    {
+      "source": "v1/core",
+      "target": "config",
+      "type": "depends_on",
+      "reason": "scheduler/kv cache policies are derived from vllm_config cache+parallel+scheduler sections"
+    },
+    {
+      "source": "v1/core",
+      "target": "multimodal",
+      "type": "depends_on",
+      "reason": "core keeps multimodal receiver cache for media payload handoff"
+    },
+    {
+      "source": "v1/executor",
+      "target": "v1/worker",
+      "type": "runtime_flow",
+      "reason": "MultiprocExecutor launches worker processes and routes scheduler outputs to worker queues"
+    },
+    {
+      "source": "v1/executor",
+      "target": "distributed",
+      "type": "depends_on",
+      "reason": "executor initializes distributed init method, model parallel, and communicator groups"
+    },
+    {
+      "source": "v1/executor",
+      "target": "config",
+      "type": "depends_on",
+      "reason": "parallel layout (TP/PP/DP, world sizes) comes from VllmConfig.parallel_config"
+    },
+    {
+      "source": "v1/worker",
+      "target": "model_executor",
+      "type": "runtime_flow",
+      "reason": "worker initializes model runner/loader and executes forward steps through model execution stack"
+    },
+    {
+      "source": "v1/worker",
+      "target": "distributed",
+      "type": "depends_on",
+      "reason": "gpu_worker initializes distributed environment, KV transfer groups, and EP/TP/PP handles"
+    },
+    {
+      "source": "v1/worker",
+      "target": "config",
+      "type": "depends_on",
+      "reason": "device, compilation, and memory behavior are driven by vllm_config"
+    },
+    {
+      "source": "model_executor",
+      "target": "config",
+      "type": "imports",
+      "reason": "model loader and runner classes import ModelConfig/VllmConfig/load configs heavily"
+    },
+    {
+      "source": "model_executor",
+      "target": "distributed",
+      "type": "depends_on",
+      "reason": "execution stack integrates distributed collectives and KV/data parallel behaviors"
+    },
+    {
+      "source": "model_executor",
+      "target": "multimodal",
+      "type": "depends_on",
+      "reason": "model-specific multimodal paths and media processing are invoked in model execution"
+    },
+    {
+      "source": "model_executor",
+      "target": "tokenizers",
+      "type": "depends_on",
+      "reason": "model and processor plumbing use tokenizer abstractions and token ids"
+    },
+    {
+      "source": "model_executor",
+      "target": "lora",
+      "type": "depends_on",
+      "reason": "model layers and runners include adapter-aware paths for LoRA requests"
+    },
+    {
+      "source": "model_executor",
+      "target": "kernels",
+      "type": "calls",
+      "reason": "execution path calls optimized kernel wrappers for attention/GEMM/normalization style ops"
+    },
+    {
+      "source": "model_executor",
+      "target": "compilation",
+      "type": "depends_on",
+      "reason": "compilation passes and graph-related options are consumed in runner setup"
+    },
+    {
+      "source": "kernels",
+      "target": "csrc",
+      "type": "depends_on",
+      "reason": "kernel wrappers rely on native custom ops provided under csrc"
+    },
+    {
+      "source": "compilation",
+      "target": "model_executor",
+      "type": "depends_on",
+      "reason": "compilation pass registration and execution are model-runner aware"
+    },
+    {
+      "source": "plugins",
+      "target": "lora",
+      "type": "depends_on",
+      "reason": "plugin system includes LoRA resolver plugin integration points"
+    },
+    {
+      "source": "plugins",
+      "target": "renderers",
+      "type": "depends_on",
+      "reason": "IO processor plugins interact with renderer/input conversion pipeline"
+    },
+    {
+      "source": "entrypoints",
+      "target": "v1/core",
+      "type": "runtime_flow",
+      "reason": "request path is API/CLI -> AsyncLLM/LLMEngine -> EngineCore scheduler"
+    }
+  ],
+  "entrypoints": [
+    "vllm/entrypoints/cli/main.py",
+    "vllm/entrypoints/openai/api_server.py",
+    "vllm/entrypoints/llm.py (from vllm import LLM)",
+    "vllm serve <model>",
+    "python -m vllm.entrypoints.openai.api_server --model <model>"
+  ]
+}
