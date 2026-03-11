@@ -141,9 +141,6 @@ Constraints:
 ## 已验证测试结果（2026-03-11）
 
 推荐展示用产物：
-- `outputs/skill-runs/requests-opencode-deepseek-attempt-10/`
-- `outputs/skill-runs/requests-codex-fast-attempt-11/`
-- `outputs/skill-runs/is-codex-fast-attempt-12/`
 - `outputs/skill-runs/vllm-codex-fast-medium-attempt-13/`
 - `outputs/skill-runs/sglang-codex-fast-medium-attempt-14/`
 - `outputs/skill-runs/transformers-codex-fast-medium-attempt-15/`
