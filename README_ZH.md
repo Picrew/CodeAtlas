@@ -41,6 +41,9 @@ CodeAtlas 是一个实用型 Skill：把 GitHub 仓库 URL 或本地代码目录
 - 公开 GitHub URL：`https://github.com/<owner>/<repo>`
 - 本地仓库路径
 
+如果输入 GitHub URL，不需要你手动下载代码。  
+CodeAtlas 会自动拉取到临时目录后直接分析。
+
 ### 输出目录
 
 `outputs/skill-runs/<run-id>/`
@@ -135,9 +138,18 @@ Constraints:
 - `outputs/skill-runs/requests-opencode-deepseek-attempt-10/`
 - `outputs/skill-runs/requests-codex-fast-attempt-11/`
 - `outputs/skill-runs/is-codex-fast-attempt-12/`
+- `outputs/skill-runs/vllm-codex-fast-medium-attempt-13/`
+- `outputs/skill-runs/sglang-codex-fast-medium-attempt-14/`
+- `outputs/skill-runs/transformers-codex-fast-medium-attempt-15/`
 
 迭代日志：
 - `logs/attempts.md`
+
+## 案例展示
+
+| vLLM 案例 | Transformers 案例 A | Transformers 案例 B |
+| --- | --- | --- |
+| ![vLLM 架构案例](./assets/case-vllm-architecture.jpg) | ![Transformers 架构案例 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers 架构案例 2](./assets/case-transformers-architecture-02.jpg) |
 
 ## 仓库结构
 

@@ -41,6 +41,9 @@ CodeAtlas is a practical skill that turns a GitHub repository URL or local repos
 - Public GitHub URL: `https://github.com/<owner>/<repo>`
 - Local repository path
 
+No manual download is required when you provide a GitHub URL.  
+CodeAtlas can fetch the repository into a temporary workspace and analyze it directly.
+
 ### Output folder
 
 `outputs/skill-runs/<run-id>/`
@@ -135,9 +138,18 @@ High-quality showcase runs:
 - `outputs/skill-runs/requests-opencode-deepseek-attempt-10/`
 - `outputs/skill-runs/requests-codex-fast-attempt-11/`
 - `outputs/skill-runs/is-codex-fast-attempt-12/`
+- `outputs/skill-runs/vllm-codex-fast-medium-attempt-13/`
+- `outputs/skill-runs/sglang-codex-fast-medium-attempt-14/`
+- `outputs/skill-runs/transformers-codex-fast-medium-attempt-15/`
 
 Iteration log:
 - `logs/attempts.md`
+
+## Example Gallery
+
+| vLLM Case | Transformers Case A | Transformers Case B |
+| --- | --- | --- |
+| ![vLLM architecture case](./assets/case-vllm-architecture.jpg) | ![Transformers architecture case 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers architecture case 2](./assets/case-transformers-architecture-02.jpg) |
 
 ## Repository Layout
 
