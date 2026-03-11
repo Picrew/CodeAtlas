@@ -34,6 +34,12 @@ CodeAtlas 是一个实用型 Skill：把 GitHub 仓库 URL 或本地代码目录
 | 多平台迭代测试 | 可在 `opencode` 和 `codex` 间反复验证 |
 | bad case 反哺能力 | 通过日志沉淀失败模式，持续优化 Skill |
 
+## 案例展示
+
+| vLLM 案例 | Transformers 案例 A | Transformers 案例 B |
+| --- | --- | --- |
+| ![vLLM 架构案例](./assets/case-vllm-architecture.jpg) | ![Transformers 架构案例 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers 架构案例 2](./assets/case-transformers-architecture-02.jpg) |
+
 ## 输入输出契约
 
 ### 输入
@@ -144,12 +150,6 @@ Constraints:
 
 迭代日志：
 - 本地记录（已忽略，不进入仓库）：`logs/attempts.md`
-
-## 案例展示
-
-| vLLM 案例 | Transformers 案例 A | Transformers 案例 B |
-| --- | --- | --- |
-| ![vLLM 架构案例](./assets/case-vllm-architecture.jpg) | ![Transformers 架构案例 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers 架构案例 2](./assets/case-transformers-architecture-02.jpg) |
 
 ## 仓库结构
 

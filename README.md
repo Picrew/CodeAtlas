@@ -34,6 +34,12 @@ CodeAtlas is a practical skill that turns a GitHub repository URL or local repos
 | Multi-platform validation loop | Repeat across `opencode` and `codex`, log each attempt |
 | Failure-oriented iteration | Track bad cases and improve the skill contract |
 
+## Example Gallery
+
+| vLLM Case | Transformers Case A | Transformers Case B |
+| --- | --- | --- |
+| ![vLLM architecture case](./assets/case-vllm-architecture.jpg) | ![Transformers architecture case 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers architecture case 2](./assets/case-transformers-architecture-02.jpg) |
+
 ## Input / Output Contract
 
 ### Input
@@ -144,12 +150,6 @@ High-quality showcase runs:
 
 Iteration log:
 - local only (ignored): `logs/attempts.md`
-
-## Example Gallery
-
-| vLLM Case | Transformers Case A | Transformers Case B |
-| --- | --- | --- |
-| ![vLLM architecture case](./assets/case-vllm-architecture.jpg) | ![Transformers architecture case 1](./assets/case-transformers-architecture-01.jpg) | ![Transformers architecture case 2](./assets/case-transformers-architecture-02.jpg) |
 
 ## Repository Layout
 
