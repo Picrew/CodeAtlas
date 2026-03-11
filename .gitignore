@@ -1,0 +1,32 @@
+# macOS and editors
+.DS_Store
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Local virtual env
+.venv/
+venv/
+
+# Build and temp outputs
+out/
+outputs/
+.tmp/
+tmp/
+*.log
+
+# Local skill install copies
+.codex/
+.claude/
+
+# Eval generated outputs
+evals/out/
+evals/iterations/
+
+# Node
+node_modules/
