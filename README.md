@@ -143,7 +143,7 @@ High-quality showcase runs:
 - `outputs/skill-runs/transformers-codex-fast-medium-attempt-15/`
 
 Iteration log:
-- `logs/attempts.md`
+- local only (ignored): `logs/attempts.md`
 
 ## Example Gallery
 
@@ -169,10 +169,6 @@ code_atlas/
 |   `-- new-run-id.sh
 |-- outputs/
 |   `-- skill-runs/
-|-- logs/
-|   `-- attempts.md
-|-- opencode/
-|   `-- skills/codeatlas/
 `-- LICENSE
 ```
 

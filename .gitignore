@@ -19,10 +19,14 @@ outputs/
 .tmp/
 tmp/
 *.log
+logs/
 
 # Local skill install copies
 .codex/
 .claude/
+
+# Local mirror copy (no need to keep duplicated skill files in repo)
+opencode/
 
 # Eval generated outputs
 evals/out/

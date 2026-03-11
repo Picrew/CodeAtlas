@@ -143,7 +143,7 @@ Constraints:
 - `outputs/skill-runs/transformers-codex-fast-medium-attempt-15/`
 
 迭代日志：
-- `logs/attempts.md`
+- 本地记录（已忽略，不进入仓库）：`logs/attempts.md`
 
 ## 案例展示
 
@@ -169,10 +169,6 @@ code_atlas/
 |   `-- new-run-id.sh
 |-- outputs/
 |   `-- skill-runs/
-|-- logs/
-|   `-- attempts.md
-|-- opencode/
-|   `-- skills/codeatlas/
 `-- LICENSE
 ```
 
